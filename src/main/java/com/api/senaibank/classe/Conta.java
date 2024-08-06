@@ -8,23 +8,27 @@ import lombok.EqualsAndHashCode;
 @Data
 @Table(name = "contas")
 public class Conta {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)    
-    private Long id;
+    private Long numeroConta;
 
     @Column(nullable = false)
     private Double saldo = 0.0;
 
     @OneToOne
-    @JoinColumn(name = "Clientes_id", referencedColumnName = " id")
-    private Cliente cliente;
+    @JoinColumn(name = "clientes_id", referencedColumnName = " id", nullable = false)
+    private Cliente titular;
 
-    // Verificar o saldo antes de realizar a transferência
-    public boolean temSaldo(double valor){
-        if(this.getSaldo() >= valor) {
-            return true;
-        } 
-        return false;
+    public void depositar(double valor) {
+        saldo += valor;
+    }
+    public void sacar(double valor) {
+        saldo -= valor;
+    }
+    public boolean temSaldo(double valor) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'temSaldo'");
     }
 
 }

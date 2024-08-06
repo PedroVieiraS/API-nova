@@ -1,5 +1,7 @@
 package com.api.senaibank.classe;
 
+import java.time.LocalDateTime;
+
 import com.api.senaibank.classe.tipotransacao.TipoTransacao;
 
 import jakarta.persistence.Column;
@@ -19,6 +21,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "transacoes")
 public class Transacao {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,12 +33,15 @@ public class Transacao {
     @Column(nullable = false)
     private double valor;
 
+    @Column(nullable = false)
+    private LocalDateTime data = LocalDateTime.now();
+
     @ManyToOne
-    @JoinColumn(name = "conta_origem", referencedColumnName = "id")
+    @JoinColumn(name = "conta_origem_id", referencedColumnName = "numeroConta")
     private Conta contaOrigem;
 
     @ManyToOne
-    @JoinColumn(name = "conta_destino", referencedColumnName = "id")
+    @JoinColumn(name = "conta_destino_id", referencedColumnName = "numeroConta")
     private Conta contaDestino;
 
 }

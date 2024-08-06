@@ -1,41 +1,60 @@
 package com.api.senaibank.classe.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 
 import com.api.senaibank.classe.Transacao;
+import com.api.senaibank.classe.service.ContaService;
 import com.api.senaibank.classe.service.TransacaoService;
 import java.util.List;
 public class TransacaoController {
 
     @Autowired
-    TransacaoService transacaoService;
+    private TransacaoService transacaoService;
 
-    @PostMapping
-    public ResponseEntity<?> create(@RequestBody Transacao transacao){
-        if( transacao.getContaOrigem().temSaldo(transacao.getValor()) ) {
-            return ResponseEntity.ok(transacaoService.create(transacao));
-        }
-        return ResponseEntity.badRequest().body("Saldo insuficiente");
-    }
+    @Autowired
+    private ContaService contaBancariaService;
+
     @GetMapping
-    public ResponseEntity<List<Transacao>> getAll(){
+    public ResponseEntity<List<Transacao>> getAll() {
         return ResponseEntity.ok(transacaoService.getAll());
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Transacao> getByid(@PathVariable Long id){
+    public ResponseEntity<Transacao> getById(@PathVariable Long id) {
         return ResponseEntity.ok(transacaoService.getById(id));
     }
+
+    @GetMapping("/extrato/{id}")
+    public ResponseEntity<List<Transacao>> getExtrato (@PathVariable Long idConta) {
+        List<Transacao> extrato = transacaoService.getExtrato(idConta);
+        
+        if (extrato.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(extrato);
+    }
+
+    @PostMapping
+    public ResponseEntity<Transacao> create(@RequestBody Transacao transacao) {
+        // Verificar se alguma das contas da transação são nulas
+        if(contaBancariaService.temSaldo(transacao)){
+            return ResponseEntity.ok(transacaoService.create(transacao));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Transacao> update(@PathVariable Long id, @RequestBody Transacao transacao){
+    public ResponseEntity<Transacao> update(@PathVariable Long id, @RequestBody Transacao transacao) {
         return ResponseEntity.ok(transacaoService.update(id, transacao));
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         transacaoService.delete(id);
         return ResponseEntity.noContent().build();
     }

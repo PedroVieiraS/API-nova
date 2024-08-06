@@ -68,4 +68,9 @@ public class ClienteService {
         return atualizarCliente(cliente, clienteInativo);
 
     }
+
+    public Cliente update(Long id, Cliente clienteExistente, Cliente clienteNovo) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
 }

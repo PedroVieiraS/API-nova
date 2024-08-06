@@ -49,16 +49,15 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
-        Cliente clienteSalvo = clienteService.getById(id);
-        if (clienteSalvo == null) {
+    public ResponseEntity<Cliente> update(@PathVariable Long id, @RequestBody Cliente clienteNovo) {
+        Cliente clienteExistente = clienteService.getById(id);
+
+        if (clienteExistente == null) {
             return ResponseEntity.notFound().build();
         }
+        Cliente clienteSalvo = clienteService.update(id, clienteExistente, clienteNovo);
 
-        clienteService.atualizarCliente(clienteSalvo, cliente);
-
-        return ResponseEntity.ok(clienteService.getById(id));
-
+        return ResponseEntity.ok(clienteSalvo);
     }
 
     @DeleteMapping("/{id}")
